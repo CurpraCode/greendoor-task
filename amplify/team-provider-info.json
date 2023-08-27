@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-greendoortask-staging-191603-authRole",
+      "UnauthRoleArn": "arn:aws:iam::533766034971:role/amplify-greendoortask-staging-191603-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::533766034971:role/amplify-greendoortask-staging-191603-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-greendoortask-staging-191603-deployment",
+      "UnauthRoleName": "amplify-greendoortask-staging-191603-unauthRole",
+      "StackName": "amplify-greendoortask-staging-191603",
+      "StackId": "arn:aws:cloudformation:us-east-1:533766034971:stack/amplify-greendoortask-staging-191603/001ff2b0-4445-11ee-8c2d-124c632731cb",
+      "AmplifyAppId": "d2ghxtdq4jcl1z"
+    },
+    "categories": {
+      "auth": {
+        "greendoortaskb55c3325": {}
+      }
+    }
+  }
+}
