@@ -1,0 +1,14 @@
+{
+  "resourceName": "carsdb",
+  "tableName": "carsdb",
+  "partitionKey": {
+    "fieldName": "name",
+    "fieldType": "string"
+  },
+  "sortKey": {
+    "fieldName": "color",
+    "fieldType": "string"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}

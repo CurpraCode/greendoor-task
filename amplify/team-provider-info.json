@@ -9,11 +9,24 @@
       "UnauthRoleName": "amplify-greendoortask-staging-191603-unauthRole",
       "StackName": "amplify-greendoortask-staging-191603",
       "StackId": "arn:aws:cloudformation:us-east-1:533766034971:stack/amplify-greendoortask-staging-191603/001ff2b0-4445-11ee-8c2d-124c632731cb",
-      "AmplifyAppId": "d2ghxtdq4jcl1z"
+      "AmplifyAppId": "d2ghxtdq4jcl1z",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-greendoortask-staging-191603-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
     },
     "categories": {
       "auth": {
         "greendoortaskb55c3325": {}
+      },
+      "function": {
+        "carsfunction": {
+          "deploymentBucketName": "amplify-greendoortask-staging-191603-deployment",
+          "s3Key": "amplify-builds/carsfunction-5758724e544366767062-build.zip"
+        }
+      },
+      "storage": {
+        "carsdb": {}
+      },
+      "api": {
+        "carhouse": {}
       }
     }
   }
