@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { API, graphqlOperation } from 'aws-amplify';
 import { Button, Table, TableBody, TableCell, TableHead, TableRow } from '@aws-amplify/ui-react';
-import { listCars } from '../graphql/queries'; // Import the GraphQL query
-import { deleteCar } from '../graphql/mutations'; // Import the GraphQL mutations
+import { listCars } from '../graphql/queries';
+import { deleteCar } from '../graphql/mutations';
 import CreateCar from './CreateCar';
 import { GraphQLResult } from '@aws-amplify/api';
+// import { UpdateCarInput } from '../API';
 
 interface Car {
   id: string;
@@ -55,7 +56,6 @@ const Home: React.FC = () => {
 
   return (
     <div>
-      Home
       <Button onClick={() => setIsModalOpen(true)}>Add Car</Button>
 
       <Table caption="" highlightOnHover={false}>
@@ -84,9 +84,7 @@ const Home: React.FC = () => {
 
       <CreateCar isOpen={isModalOpen} onClose={closeModal} carToUpdate={carToUpdate} />
 
-      <div>
-        
-      </div>
+    
     </div>
   );
 };

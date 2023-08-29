@@ -7,7 +7,7 @@ import {
 } from '@aws-amplify/ui-react';
 import { API, graphqlOperation } from 'aws-amplify'; // Import 'graphqlOperation' from AWS Amplify
 import { createCar, updateCar } from '../graphql/mutations'; // Import the GraphQL mutations
-import { CreateCarInput } from '../API';
+import { CreateCarInput, UpdateCarInput } from '../API';
 
 interface CreateCarProps {
   isOpen: boolean;
@@ -26,6 +26,7 @@ const CreateCar: React.FC<CreateCarProps> = ({ isOpen, onClose, carToUpdate }: a
   useEffect(() => {
     if (carToUpdate) {
       setCar(carToUpdate);
+      console.log(carToUpdate)
     }
   }, [carToUpdate]);
 
@@ -33,27 +34,44 @@ const CreateCar: React.FC<CreateCarProps> = ({ isOpen, onClose, carToUpdate }: a
   const carName = ['select', 'Audi', 'BMW', 'Vauxhal', 'Mercedes', 'Peugeot', 'Renault'];
 
   const handleChange = (field: keyof CreateCarInput, value: string) => {
-    setCar((prevCar) => ({ ...prevCar, [field]: value }));
-    if (field === 'color' && value === 'red') {
+    if (field === 'color' && value !== 'red') {
       setCar((prevCar) => ({
         ...prevCar,
-        description: 'the car is red',
+        [field]: value,
+        description: '', // Clear description when color is not red
       }));
+    } else {
+      setCar((prevCar) => ({ ...prevCar, [field]: value }));
     }
   };
+  
 
   const handleSubmit = async () => {
     try {
       if (carToUpdate) {
-        await API.graphql(graphqlOperation(updateCar, { input: carToUpdate }));
+        const input: UpdateCarInput = {
+          id: carToUpdate.id,
+          name: car.name,
+          color: car.color,
+          description: car.description,
+          code: car.code,
+        };
+        await API.graphql(graphqlOperation(updateCar, { input }));
       } else {
-        await API.graphql(graphqlOperation(createCar, { input: car }));
+        const input: CreateCarInput = {
+          name: car.name,
+          color: car.color,
+          description: car.description,
+          code: car.code,
+        };
+        await API.graphql(graphqlOperation(createCar, { input }));
       }
       onClose();
     } catch (error) {
       console.error('Error creating/updating car:', error);
     }
   };
+  
 
   return (
     <div
