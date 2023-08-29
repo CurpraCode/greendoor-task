@@ -1,22 +1,24 @@
 {
   "api": {
-    "carhouse": {
-      "dependsOn": [
-        {
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "category": "function",
-          "resourceName": "carsfunction"
+    "greendoortask": {
+      "dependsOn": [],
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [],
+          "defaultAuthentication": {
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 7
+            },
+            "authenticationType": "API_KEY"
+          }
         }
-      ],
+      },
       "providerPlugin": "awscloudformation",
-      "service": "API Gateway"
+      "service": "AppSync"
     }
   },
   "auth": {
-    "greendoortaskb55c3325": {
+    "greendoortaska5c4e260": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
@@ -41,51 +43,6 @@
       },
       "providerPlugin": "awscloudformation",
       "service": "Cognito"
-    }
-  },
-  "function": {
-    "carsfunction": {
-      "build": true,
-      "dependsOn": [
-        {
-          "attributeEnvMap": {
-            "Arn": "TABLE_ARN",
-            "Name": "TABLE_NAME"
-          },
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "category": "storage",
-          "resourceName": "carsdb"
-        }
-      ],
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    }
-  },
-  "parameters": {
-    "AMPLIFY_function_carsfunction_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "carsfunction"
-        }
-      ]
-    },
-    "AMPLIFY_function_carsfunction_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "carsfunction"
-        }
-      ]
-    }
-  },
-  "storage": {
-    "carsdb": {
-      "providerPlugin": "awscloudformation",
-      "service": "DynamoDB"
     }
   }
 }

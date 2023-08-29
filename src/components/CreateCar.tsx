@@ -5,65 +5,55 @@ import {
   TextAreaField,
   TextField,
 } from '@aws-amplify/ui-react';
-import { API } from 'aws-amplify';
+import { API, graphqlOperation } from 'aws-amplify'; // Import 'graphqlOperation' from AWS Amplify
+import { createCar, updateCar } from '../graphql/mutations'; // Import the GraphQL mutations
+import { CreateCarInput } from '../API';
 
-interface Car {
-    id?: string;
-    name: string;
-    color: string;
-    description: string;
-    code:string
-  }
-  
-  interface CreateCarProps {
-    isOpen: boolean;
-    onClose: () => void;
-    carToUpdate?: Car | null;
-  }
+interface CreateCarProps {
+  isOpen: boolean;
+  onClose: () => void;
+  carToUpdate?: CreateCarInput | null;
+}
 
-const CreateCar: React.FC<CreateCarProps> = ({ isOpen, onClose, carToUpdate }:any) => {
-    const [car, setCar] = useState<Car>({
-        name: '',
-        color: '',
-        description: '',
-        code:''
-      });
-    
-      useEffect(() => {
-        if (carToUpdate) {
-          setCar(carToUpdate);
-        }
-      }, [carToUpdate]);
-    
-      const colors = ['select','red', 'blue', 'green', 'white'];
-      const carName = ['select','Audi', 'BMW', 'Vauxhal', 'Mercedes', 'Peugeot', 'Renault'];
-    
-      const handleChange = (field: keyof Car, value: string) => {
-        setCar((prevCar) => ({ ...prevCar, [field]: value }));
-        if (field === 'color' && value === 'red') {
-          setCar((prevCar) => ({
-            ...prevCar,
-            description: 'the car is red',
-          }));
-        }
-      };
-    
-      const handleSubmit = async () => {
-        try {
-          if (carToUpdate) {
-            await API.put('carhouse', `/cars/${carToUpdate.id}`, {
-              body: car,
-            });
-          } else {
-            await API.post('carhouse', '/cars', {
-              body: car,
-            });
-          }
-          onClose();
-        } catch (error) {
-          console.error('Error creating/updating car:', error);
-        }
-      };
+const CreateCar: React.FC<CreateCarProps> = ({ isOpen, onClose, carToUpdate }: any) => {
+  const [car, setCar] = useState<CreateCarInput>({
+    name: '',
+    color: '',
+    description: '',
+    code: '',
+  });
+
+  useEffect(() => {
+    if (carToUpdate) {
+      setCar(carToUpdate);
+    }
+  }, [carToUpdate]);
+
+  const colors = ['select', 'red', 'blue', 'green', 'white'];
+  const carName = ['select', 'Audi', 'BMW', 'Vauxhal', 'Mercedes', 'Peugeot', 'Renault'];
+
+  const handleChange = (field: keyof CreateCarInput, value: string) => {
+    setCar((prevCar) => ({ ...prevCar, [field]: value }));
+    if (field === 'color' && value === 'red') {
+      setCar((prevCar) => ({
+        ...prevCar,
+        description: 'the car is red',
+      }));
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      if (carToUpdate) {
+        await API.graphql(graphqlOperation(updateCar, { input: carToUpdate }));
+      } else {
+        await API.graphql(graphqlOperation(createCar, { input: car }));
+      }
+      onClose();
+    } catch (error) {
+      console.error('Error creating/updating car:', error);
+    }
+  };
 
   return (
     <div
@@ -78,7 +68,7 @@ const CreateCar: React.FC<CreateCarProps> = ({ isOpen, onClose, carToUpdate }:an
         zIndex: 1000,
       }}
     >
-           <div
+      <div
         style={{
           position: 'absolute',
           top: '50%',
@@ -89,12 +79,10 @@ const CreateCar: React.FC<CreateCarProps> = ({ isOpen, onClose, carToUpdate }:an
           borderRadius: '5px',
           boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
         }}
-      ><h2>
-        {carToUpdate ? 'Update Car' : 'Add a Car'}
-      </h2>
+      >
+        <h2>{carToUpdate ? 'Update Car' : 'Add a Car'}</h2>
 
-      
-         <SelectField
+        <SelectField
           label="Car Name"
           value={car.name}
           onChange={(e) => handleChange('name', e.target.value)}
@@ -119,27 +107,22 @@ const CreateCar: React.FC<CreateCarProps> = ({ isOpen, onClose, carToUpdate }:an
         {car.color === 'red' && (
           <TextAreaField
             label="Description"
-            value={car.description}
+            value={car.description || ''}
             onChange={(e) => handleChange('description', e.target.value)}
           />
         )}
-           <TextField
+        <TextField
           label="Code"
           value={car.code}
           onChange={(e) => handleChange('code', e.target.value)}
         />
-      
-  
-        <Button  onClick={handleSubmit}>
+
+        <Button onClick={handleSubmit}>
           {carToUpdate ? 'Update Car' : 'Create Car'}
         </Button>
-        <Button onClick={onClose}>
-          Cancel
-        </Button>
-     </div>
-     </div>
-           
-
+        <Button onClick={onClose}>Cancel</Button>
+      </div>
+    </div>
   );
 };
 

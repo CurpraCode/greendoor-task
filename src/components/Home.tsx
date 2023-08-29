@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { API } from 'aws-amplify';
-import CreateCar from './CreateCar';
+import { API, graphqlOperation } from 'aws-amplify';
 import { Button, Table, TableBody, TableCell, TableHead, TableRow } from '@aws-amplify/ui-react';
+import { listCars } from '../graphql/queries'; // Import the GraphQL query
+import { deleteCar } from '../graphql/mutations'; // Import the GraphQL mutations
+import CreateCar from './CreateCar';
+import { GraphQLResult } from '@aws-amplify/api';
 
 interface Car {
   id: string;
   name: string;
   color: string;
   description: string;
-  code:''
+  code: string;
 }
 
 const Home: React.FC = () => {
@@ -20,23 +23,14 @@ const Home: React.FC = () => {
     fetchCars();
   }, []);
 
-  const fetchCars = () => {
-    API.get('carhouse', '/cars/name', {})
-  .then((response) => {
-    // Process the retrieved data from the API response
-    console.log(response);
-  })
-  .catch((error) => {
-    // Handle error
-    console.error('Error fetching data:', error);
-  });
-    // try {
-    //   const response = await API.get('carhouse', '/cars/name', {headers: {}});
-    //   setCars(response);
-    //   console.log(response)
-    // } catch (error) {
-    //   console.error('Error fetching cars:', error);
-    // }
+  const fetchCars = async () => {
+    try {
+      const response = await API.graphql(graphqlOperation(listCars));
+      const responseData = response as GraphQLResult<{ listCars: { items: Car[] } }>;
+      setCars(responseData.data?.listCars.items || []);
+    } catch (error) {
+      console.error('Error fetching cars:', error);
+    }
   };
 
   const openModal = (car: Car) => {
@@ -50,9 +44,9 @@ const Home: React.FC = () => {
     fetchCars();
   };
 
-  const deleteCar = async (id: string) => {
+  const handleDeleteCar = async (id: string) => {
     try {
-      await API.del('carhouse', `/cars/${id}`, {});
+      await API.graphql(graphqlOperation(deleteCar, { input: { id } }));
       fetchCars();
     } catch (error) {
       console.error('Error deleting car:', error);
@@ -81,7 +75,7 @@ const Home: React.FC = () => {
               <TableCell>{car.description}</TableCell>
               <TableCell>
                 <Button onClick={() => openModal(car)}>Edit</Button>
-                <Button onClick={() => deleteCar(car.id)}>Delete</Button>
+                <Button onClick={() => handleDeleteCar(car.id)}>Delete</Button>
               </TableCell>
             </TableRow>
           ))}
@@ -89,6 +83,10 @@ const Home: React.FC = () => {
       </Table>
 
       <CreateCar isOpen={isModalOpen} onClose={closeModal} carToUpdate={carToUpdate} />
+
+      <div>
+        
+      </div>
     </div>
   );
 };
